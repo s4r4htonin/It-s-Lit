@@ -16,10 +16,10 @@ Adafruit_NeoPixel strip3 = Adafruit_NeoPixel(3, PIN3, NEO_GRB + NEO_KHZ800);
 
 //define your colors here
 uint32_t blue = strip1.Color(39,112,250);
-//uint32_t purple = strip1.Color(87,33,182);
 uint32_t purple = strip1.Color(72,34,186);
 uint32_t pink = strip1.Color(222,51,192);
 uint32_t black = strip1.Color(0,0,0);
+uint32_t white = strip1.Color(100,100,100);
 
 void setup() {
   strip1.begin();
@@ -37,8 +37,8 @@ void setup() {
   strip1.show();
   strip2.show();
   strip3.show();
-//  Serial.begin(9600);
-//  while (! Serial);
+  Serial.begin(9600);
+  while (! Serial);
 }
 
 // ===========================================
@@ -48,9 +48,22 @@ void setup() {
 // ***** MAIN LOOP *****
 void loop() {
   patternCombo1();
-  //patternCombo2();
-  //patternCombo3();
-  //patternCombo4();
+  patternCombo1();
+  patternCombo1();
+
+  patternCombo3();
+  patternCombo3();
+  patternCombo3();
+  patternCombo3();
+
+  patternCombo2();
+
+  patternCombo4();
+  patternCombo4();
+  patternCombo4();
+
+  patternCombo5(10);
+
 }
 
 // ===========================================
@@ -73,7 +86,9 @@ void patternCombo1() {
   do {
     rainbow(&strip1, &j1, &offset);
     theaterChase(&strip2, blue, &j1, pace, &paceTracker1, &pos1);
-    rainbow(&strip3, &j1, &offset);
+    strip3.fill(blue, 0, strip2.numPixels());
+    strip3.show();
+    //rainbow(&strip3, &j1, &offset);
     delay(wait);
 
     j1++;
@@ -85,24 +100,23 @@ void patternCombo1() {
 // ===========================================
 void patternCombo2() {
   //init
-  byte wait = 20;
+  byte wait = 5;
   int j1=0;
 
-  byte pace = 5;
-  int steps = 5000;
+  byte pace = 1;
+  int steps = 3000;
   int pos = 0;
   byte offset = 0;
 
-  strip2.fill(blue, 0, strip2.numPixels());
-  strip2.show();
+  //strip2.fill(blue, 0, strip2.numPixels());
+  //strip2.show();
   
   //loop
   do {
     rainbowCycle(&strip1, &j1);
-    //rainbow(&strip2, &j1, &offset);
-    //rainbow(&strip3, &j1, &offset);
-    //colorShift(&strip2, 1, purple, blue, steps, &pos, pace);
-    //colorShift(&strip3, 1, purple, black, steps, &pos, pace);
+    colorShift(&strip2, white, black, steps, &pos, pace);
+    colorShift(&strip3, white, black, steps, &pos, pace);
+
     delay(wait);
 
     j1++;
@@ -114,23 +128,23 @@ void patternCombo2() {
 // ===========================================
 void patternCombo3() {
   //init
-  byte wait = 20;
-  byte pace = 50;
+  byte wait = 0;
+  byte pace = 100;
   int j1=0;
+  int j2=0;
   byte offset = 100;
   byte offset2 = 200;
   byte paceTracker1 = 0;
+  byte paceTracker2 = 0;
 
-  //define brightness variables for each strip initialize to 0
-  byte b1=0;
-  byte b2=0;
-  byte b3=0;
+  strip3.fill(blue, 0, strip2.numPixels());
+  strip3.show();
 
   //loop
   do {
     theaterChaseRainbow(&strip1, &j1, pace, &paceTracker1);
-    rainbow(&strip2, &j1, &offset);
-    rainbow(&strip3, &j1, &offset2);
+    theaterChaseRainbow(&strip2, &j1, pace, &paceTracker2);
+
     delay(wait);
 
     j1++;
@@ -142,19 +156,83 @@ void patternCombo3() {
 // ===========================================
 void patternCombo4() {
   //init
-  byte wait = 10;
   byte pace = 5;
-  int steps = 5000;
-  int pos = 0;
-  int j1=0;
+  int steps = 255;
+  int pos=0;
 
-  //loop
+  strip1.fill(black, 0, strip1.numPixels());
+  strip1.show();
+  strip2.fill(black, 0, strip2.numPixels());
+  strip2.show();
+  strip3.fill(black, 0, strip3.numPixels());
+  strip3.show();
+
+  //loop - transformation
+  pos = 0;
   do {
-      colorShift(&strip1, 1, blue, purple, steps, &pos, pace);
-      colorShift(&strip2, 1, black, purple, steps, &pos, pace);
-      colorShift(&strip3, 1, black, purple, steps, &pos, pace);
-    j1++;
-  } while (j1<steps);
+      colorShift(&strip1, black, blue, steps, &pos, pace);
+  } while (pos<252);
+
+  //loop - transformation
+  pos = 0;
+  do {
+      colorShift(&strip1, blue, purple, steps, &pos, pace);
+      colorShift(&strip2, black, pink, steps, &pos, pace);
+      colorShift(&strip3, black, blue, steps, &pos, pace);
+  } while (pos<252);
+
+  //loop - transformation
+  pos = 0;
+  do {
+      colorShift(&strip1, purple, pink, steps, &pos, pace);
+      colorShift(&strip2, pink, blue, steps, &pos, pace);
+      colorShift(&strip3, blue, purple, steps, &pos, pace);
+  } while (pos<252);
+
+  //loop - transformation
+  pos = 0;
+  do {
+      colorShift(&strip1, pink, black, steps, &pos, pace);
+      colorShift(&strip2, blue, black, steps, &pos, pace);
+      colorShift(&strip3, purple, pink, steps, &pos, pace);
+  } while (pos<252);
+
+  //loop - transformation
+  pos = 0;
+  do {
+      colorShift(&strip3, purple, black, steps, &pos, pace);
+  } while (pos<252);
+  
+}
+
+
+//Fifth routine
+// ===========================================
+void patternCombo5(int reps) {
+  
+  //init
+  byte wait = 0;
+  byte pace = 100;
+  int j1=0;
+  byte paceTracker1 = 0;
+
+  for (byte r=0; r<reps; r++) {
+    j1=0;
+    paceTracker1 = 0;
+    strip2.fill(blue, 0, strip2.numPixels());
+    strip2.show();
+    strip3.fill(blue, 0, strip3.numPixels());
+    strip3.show();
+  
+    //loop
+    do {
+      theaterChaseRainbow(&strip1, &j1, pace, &paceTracker1);
+  
+      delay(wait);
+  
+      j1++;
+    } while (j1<256);
+  }
 }
 
 
@@ -193,7 +271,7 @@ void rainbowCycle(Adafruit_NeoPixel *strip, int *j) {
 void theaterChase(Adafruit_NeoPixel *strip, uint32_t color, int *j, byte pace, byte *paceTracker, byte *pos) {
   if (*paceTracker > pace) {
     *paceTracker = 0;
-    for (byte i=1; i<strip->numPixels(); i++) {
+    for (byte i=0; i<strip->numPixels(); i++) {
       if (i % 3 == *pos) {
         strip->setPixelColor(i, color);
       }
@@ -237,26 +315,8 @@ void theaterChaseRainbow(Adafruit_NeoPixel *strip, int *j, byte pace, byte *pace
 }
 
 
-
-// ** Pulse **
-void pulse(Adafruit_NeoPixel *strip, byte *b, uint32_t clr) {
-  if (*b++ > 254) {
-    *b = 0;
-  }
-  strip->fill(clr, 0, strip->numPixels());
-  for (byte i=0; i<=strip->numPixels(); i++) {
-    strip->setPixelColor(i, 0, 0, *b);
-    //strip->setBrightness(b);
-    strip->show();
-  }
-}
-
-
-
-// * * * * * Helper Functions. * * * * * *
-// =======================================
-
-void colorShift(Adafruit_NeoPixel *strip, byte led, uint32_t startColor, uint32_t endColor, uint8_t numSteps, int *pos, byte pace) {
+// ** ColorShift **
+void colorShift(Adafruit_NeoPixel *strip, uint32_t startColor, uint32_t endColor, uint8_t numSteps, int *pos, byte pace) {
   
   int rIncrement, gIncrement, bIncrement;
 
@@ -271,14 +331,7 @@ void colorShift(Adafruit_NeoPixel *strip, byte led, uint32_t startColor, uint32_
   int bStart = clr(startColor, 'B');
   int bEnd = clr(endColor, 'B');
   int bNew = (*pos * (bEnd-bStart)/numSteps) + bStart;
-/*
-  Serial.print("rNew ");
-  Serial.print(rNew);
-  Serial.print(" gNew ");
-  Serial.print(gNew);
-  Serial.print(" bNew ");
-  Serial.println(bNew);
-*/
+
   strip->fill(strip->Color(rNew, gNew, bNew), 0, strip->numPixels());
   strip->show();
   *pos = *pos + 1;
@@ -287,6 +340,26 @@ void colorShift(Adafruit_NeoPixel *strip, byte led, uint32_t startColor, uint32_
   }
   delay(pace);
 }
+
+
+// ** Pulse **
+void pulse(Adafruit_NeoPixel *strip, uint32_t startColor, uint32_t endColor, uint8_t numSteps, int *pos, byte pace) {
+  int midway = numSteps/2;
+  int pulsePos;
+  if (*pos > midway) {
+    pulsePos = *pos-midway;
+  }
+  else {
+    pulsePos = *pos;
+  }
+  *pos = *pos + 1;
+  
+  colorShift(strip, black, white, numSteps, pulsePos, pace);
+}
+
+
+// * * * * * Helper Functions. * * * * * *
+// =======================================
 
 // Color Extractor: Extract R, G or B out of the neopixel color
 uint8_t clr(uint32_t rgb, char whichColor) {
